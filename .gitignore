@@ -1,0 +1,23 @@
+# Python virtual environment
+.venv/
+venv/
+ENV/
+
+# Python caches
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+
+# OS / editor cruft
+Thumbs.db
+Desktop.ini
+.DS_Store
+.vscode/
+.idea/
+
+# Local audio scratch / recordings
+*.wav
+*.mp3
+*.flac
