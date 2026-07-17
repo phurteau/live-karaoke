@@ -119,6 +119,7 @@ the next step up.
 |------|---------|
 | `karaoke.py` | Audio engine + Tkinter GUI |
 | `dsp.py` | Pitch shifter, pitch detection, scale / auto-tune math |
+| `updater.py` | Checks GitHub Releases and applies in-app updates |
 | `selftest.py` | Offline test of every effect path (no mic needed) |
 | `run_karaoke.bat` | Launcher (auto-installs on first run) |
 | `uninstall.bat` | Removes the venv, or optionally the whole folder |
@@ -153,6 +154,22 @@ Run the offline self-test any time:
 
 Run **`uninstall.bat`** - it removes the virtual environment (and can optionally
 delete the whole folder). Re-running `run_karaoke.bat` rebuilds everything.
+
+## Automatic updates
+
+On launch, the app quietly checks GitHub for a newer release. If one exists, a
+green **🔔 New version available** banner appears at the top with a one-click
+**⬇ Update now** button:
+
+- If you installed via `git clone`, it updates in place with `git pull`
+  (falling back to the release zip if needed).
+- If you installed from a downloaded zip, it downloads and extracts the latest
+  release over your copy.
+
+Dependencies are synced automatically, then you're prompted to **restart** to
+apply. The check is non-blocking and fails silently when you're offline. Use the
+**✕** to dismiss the banner, or **Release notes** to view the changelog on
+GitHub.
 
 ## License
 

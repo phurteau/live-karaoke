@@ -5,6 +5,7 @@ in real time. USE HEADPHONES to avoid feedback howl.
 
 Run:  python karaoke.py     (or double-click run_karaoke.bat)
 """
+import os
 import sys
 import threading
 import numpy as np
@@ -13,6 +14,7 @@ from pedalboard import (Pedalboard, HighpassFilter, NoiseGate, Compressor,
                         Chorus, Delay, Reverb, Gain, Limiter)
 
 import dsp
+import updater
 from dsp import TDPitchShifter, detect_pitch, autotune_ratio, note_name, NOTE_NAMES
 
 LATENCY_PRESETS = {
@@ -291,7 +293,7 @@ def run_gui():
 
     engine = KaraokeEngine()
     root = tk.Tk()
-    root.title("Live Karaoke")
+    root.title(f"Live Karaoke  v{updater.__version__}")
     root.geometry("600x790")
     root.minsize(560, 720)
 
@@ -412,6 +414,77 @@ def run_gui():
     banner = tk.Label(root, text="🎧  USE HEADPHONES  -  speakers will cause feedback howl",
                       bg="#1a1e1a", fg="#ffcc55", font=('Segoe UI', 9, 'bold'))
     banner.pack(fill='x')
+
+    # ---- update banner (hidden until a newer release is detected) ----
+    upd_bar = tk.Frame(root, bg="#0c2a0c")
+    upd_state = {"info": None, "busy": False}
+    upd_lbl = tk.Label(upd_bar, bg="#0c2a0c", fg="#8affa0",
+                       font=('Segoe UI', 9, 'bold'), anchor='w')
+    upd_lbl.pack(side='left', padx=10, pady=4)
+
+    def _upd_open_notes():
+        info = upd_state["info"]
+        if info:
+            import webbrowser
+            webbrowser.open(info["url"])
+
+    def _upd_restart():
+        if updater.relaunch():
+            engine.stop()
+            root.destroy()
+        else:
+            messagebox.showinfo("Restart", "Update applied. Please close and reopen the app.")
+
+    def _upd_do_update():
+        info = upd_state["info"]
+        if not info or upd_state["busy"]:
+            return
+        upd_state["busy"] = True
+        upd_btn.config(state='disabled', text="Updating…")
+        upd_notes_btn.config(state='disabled')
+
+        def worker():
+            ok, msg = updater.apply_update(info)
+            if ok:
+                updater.sync_dependencies()
+
+            def done():
+                upd_state["busy"] = False
+                upd_notes_btn.config(state='normal')
+                if ok:
+                    upd_lbl.config(text=f"✅  Updated to v{info['version']} - restart to apply.")
+                    upd_btn.config(state='normal', text="⟳  Restart now", command=_upd_restart)
+                else:
+                    upd_btn.config(state='normal', text="Retry update", command=_upd_do_update)
+                    messagebox.showerror("Update failed", msg)
+            root.after(0, done)
+        threading.Thread(target=worker, daemon=True).start()
+
+    upd_notes_btn = ttk.Button(upd_bar, text="Release notes", command=_upd_open_notes)
+    upd_btn = ttk.Button(upd_bar, text="⬇  Update now", style='Accent.TButton', command=_upd_do_update)
+    upd_dismiss = ttk.Button(upd_bar, text="✕", width=3, command=lambda: upd_bar.pack_forget())
+    upd_dismiss.pack(side='right', padx=(0, 6), pady=3)
+    upd_notes_btn.pack(side='right', padx=(0, 6), pady=3)
+    upd_btn.pack(side='right', padx=(0, 6), pady=3)
+
+    def _show_update(info):
+        try:
+            upd_state["info"] = info
+            upd_lbl.config(text=f"🔔  New version v{info['version']} available "
+                                f"(you have v{updater.__version__})")
+            upd_bar.pack(fill='x', after=banner)
+        except Exception:
+            pass
+
+    def _check_updates():
+        try:
+            cur = os.environ.get('KARAOKE_FAKE_VERSION', updater.__version__)
+            info = updater.check_for_update(cur)
+            if info:
+                root.after(0, lambda: _show_update(info))
+        except Exception:
+            pass
+    threading.Thread(target=_check_updates, daemon=True).start()
 
     top = ttk.Frame(root); top.pack(fill='x', **pad)
     ttk.Label(top, text="Mic in").grid(row=0, column=0, sticky='w')
@@ -562,7 +635,6 @@ def run_gui():
         engine.stop()
         root.destroy()
     root.protocol("WM_DELETE_WINDOW", on_close)
-    import os
     if os.environ.get('KARAOKE_TOPMOST'):
         try:
             root.attributes('-topmost', True)
