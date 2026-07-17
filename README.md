@@ -119,6 +119,7 @@ the next step up.
 |------|---------|
 | `karaoke.py` | Audio engine + Tkinter GUI |
 | `dsp.py` | Pitch shifter, pitch detection, scale / auto-tune math |
+| `theme.py` | Token-based dark/light themes + HSV accent color-wheel picker |
 | `updater.py` | Checks GitHub Releases and applies in-app updates |
 | `selftest.py` | Offline test of every effect path (no mic needed) |
 | `run_karaoke.bat` | Launcher (auto-installs on first run) |
@@ -154,6 +155,21 @@ Run the offline self-test any time:
 
 Run **`uninstall.bat`** - it removes the virtual environment (and can optionally
 delete the whole folder). Re-running `run_karaoke.bat` rebuilds everything.
+
+## Themes & accent color
+
+The UI is a **token-based dual theme**: **dark** (true black, default) or **light**
+(soft off-white), toggled with the **☀/☾** button in the header. A single
+user-chosen **accent** color drives every highlight - the START button, section
+titles, checkboxes, focus rings and the color-wheel marker - while every other
+surface stays neutral, so any accent looks good.
+
+Click **🎨 Accent** to open an **HSV color-wheel picker**: drag on the wheel
+(hue = angle, saturation = distance from center), set **Brightness** below, or
+type a **hex** value. Changes apply live. A companion "brighter" shade for hovers
+and glows, plus readable text color on accent buttons, are derived automatically.
+Your theme and accent persist between runs (default: dark + a dimmed green
+`#025500`).
 
 ## Automatic updates
 

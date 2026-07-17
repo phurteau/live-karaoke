@@ -15,6 +15,7 @@ from pedalboard import (Pedalboard, HighpassFilter, NoiseGate, Compressor,
 
 import dsp
 import updater
+import theme
 from dsp import TDPitchShifter, detect_pitch, autotune_ratio, note_name, NOTE_NAMES
 
 LATENCY_PRESETS = {
@@ -294,61 +295,19 @@ def run_gui():
     engine = KaraokeEngine()
     root = tk.Tk()
     root.title(f"Live Karaoke  v{updater.__version__}")
-    root.geometry("600x790")
-    root.minsize(560, 720)
+    root.geometry("620x860")
+    root.minsize(580, 780)
 
     style = ttk.Style(root)
     try:
         style.theme_use('clam')
     except Exception:
         pass
-    # Dark mode with pure-green (RGB 0,255,0) accent
-    BG = "#0b0d0b"       # near-black window
-    PANEL = "#121512"    # group panels
-    FIELD = "#1a1e1a"    # inputs / troughs
-    BORDER = "#1f3a1f"   # subtle green-tinted borders
-    FG = "#dfe8df"       # off-white text
-    MUTED = "#8fa88f"    # secondary text
-    ACC = "#00ff00"      # pure green accent
-    ACC_DIM = "#00b800"  # hover / pressed
-    ACC_DARK = "#003300"
-    root.configure(bg=BG)
-    root.option_add('*TCombobox*Listbox.background', FIELD)
-    root.option_add('*TCombobox*Listbox.foreground', FG)
-    root.option_add('*TCombobox*Listbox.selectBackground', ACC_DARK)
-    root.option_add('*TCombobox*Listbox.selectForeground', ACC)
-
-    style.configure('.', background=BG, foreground=FG, fieldbackground=FIELD,
-                    bordercolor=BORDER, darkcolor=PANEL, lightcolor=PANEL,
-                    troughcolor=FIELD, focuscolor=ACC)
-    style.configure('TFrame', background=BG)
-    style.configure('TLabel', background=BG, foreground=FG)
-    style.configure('TLabelframe', background=PANEL, bordercolor=BORDER, relief='solid')
-    style.configure('TLabelframe.Label', background=PANEL, foreground=ACC, font=('Segoe UI', 10, 'bold'))
-    style.configure('TCheckbutton', background=PANEL, foreground=FG, focuscolor=ACC)
-    style.map('TCheckbutton',
-              background=[('active', PANEL)],
-              foreground=[('active', ACC)],
-              indicatorcolor=[('selected', ACC), ('!selected', FIELD)])
-    style.configure('TButton', background=FIELD, foreground=FG, bordercolor=BORDER, focuscolor=BG)
-    style.map('TButton',
-              background=[('active', ACC_DARK), ('pressed', ACC_DARK)],
-              foreground=[('active', ACC)],
-              bordercolor=[('active', ACC)])
-    style.configure('Accent.TButton', background=ACC, foreground="#001200",
-                    bordercolor=ACC, font=('Segoe UI', 11, 'bold'))
-    style.map('Accent.TButton',
-              background=[('active', ACC_DIM), ('pressed', ACC_DIM)],
-              foreground=[('active', "#001200")])
-    style.configure('Horizontal.TScale', background=PANEL, troughcolor=FIELD)
-    style.configure('TCombobox', fieldbackground=FIELD, background=FIELD,
-                    foreground=FG, arrowcolor=ACC, bordercolor=BORDER)
-    style.map('TCombobox',
-              fieldbackground=[('readonly', FIELD)],
-              foreground=[('readonly', FG)],
-              selectbackground=[('readonly', FIELD)],
-              selectforeground=[('readonly', FG)],
-              bordercolor=[('focus', ACC)])
+    # ---- token-based theme (dark default; one accent drives all highlights) ----
+    _prefs = theme.load_prefs()
+    thm = theme.Theme(_prefs["mode"], _prefs["accent"])
+    T = dict(thm.tokens)               # live token holder, refreshed by restyle()
+    theme.apply_styles(style, root, T)
 
     ins, outs = list_devices()
     din, dout = preferred_defaults()
@@ -411,15 +370,24 @@ def run_gui():
     # ---- layout ----
     pad = dict(padx=8, pady=3)
 
+    # ---- header bar: title + theme toggle + accent picker ----
+    bar = ttk.Frame(root)
+    bar.pack(fill='x')
+    title_lbl = ttk.Label(bar, text="🎤  Live Karaoke", style='Head.TLabel')
+    title_lbl.pack(side='left', padx=12, pady=7)
+    btn_theme = ttk.Button(bar, text="☀", style='Icon.TButton', width=3)
+    btn_accent = ttk.Button(bar, text="🎨  Accent", style='Icon.TButton')
+    btn_theme.pack(side='right', padx=(0, 12), pady=6)
+    btn_accent.pack(side='right', padx=(0, 6), pady=6)
+
     banner = tk.Label(root, text="🎧  USE HEADPHONES  -  speakers will cause feedback howl",
-                      bg="#1a1e1a", fg="#ffcc55", font=('Segoe UI', 9, 'bold'))
+                      font=('Segoe UI', 9, 'bold'))
     banner.pack(fill='x')
 
     # ---- update banner (hidden until a newer release is detected) ----
-    upd_bar = tk.Frame(root, bg="#0c2a0c")
+    upd_bar = tk.Frame(root)
     upd_state = {"info": None, "busy": False}
-    upd_lbl = tk.Label(upd_bar, bg="#0c2a0c", fg="#8affa0",
-                       font=('Segoe UI', 9, 'bold'), anchor='w')
+    upd_lbl = tk.Label(upd_bar, font=('Segoe UI', 9, 'bold'), anchor='w')
     upd_lbl.pack(side='left', padx=10, pady=4)
 
     def _upd_open_notes():
@@ -556,7 +524,7 @@ def run_gui():
     ttk.Combobox(r5, textvariable=v['at_key'], values=NOTE_NAMES, state='readonly', width=4).pack(side='left')
     ttk.Label(r5, text="Scale").pack(side='left', padx=(10, 2))
     ttk.Combobox(r5, textvariable=v['at_scale'], values=list(dsp.SCALES), state='readonly', width=11).pack(side='left')
-    lbl_note = ttk.Label(r5, text="♪ --", font=('Segoe UI', 11, 'bold'), foreground=ACC)
+    lbl_note = ttk.Label(r5, text="♪ --", font=('Segoe UI', 11, 'bold'))
     lbl_note.pack(side='right', padx=8)
     slider(f5, "Strength", v['at_strength'], 0.0, 1.0)
     slider(f5, "Retune speed", v['at_retune'], 0.02, 1.0)
@@ -579,14 +547,14 @@ def run_gui():
         ttk.Button(pf, text=name, command=lambda n=name: apply_preset(n)).pack(side='left', padx=2)
 
     status = ttk.Label(root, text="Stopped", anchor='w', relief='sunken',
-                       foreground=MUTED, font=('Consolas', 9))
+                       font=('Consolas', 9))
     status.pack(fill='x', side='bottom')
 
     def do_start():
         if engine.running:
             engine.stop()
             btn_start.config(text="▶  START")
-            status.config(text="Stopped", foreground=MUTED)
+            status.config(text="Stopped", foreground=T['dim'])
             return
         try:
             in_i = in_idx_map[in_labels.index(v_in.get())]
@@ -608,6 +576,27 @@ def run_gui():
 
     btn_start.config(command=do_start)
 
+    def restyle():
+        T.clear(); T.update(thm.tokens)
+        theme.apply_styles(style, root, T)
+        banner.config(bg=T['panel2'], fg=T['warn'])
+        upd_bar.config(bg=T['panel2'])
+        upd_lbl.config(bg=T['panel2'], fg=T['acc2'])
+        status.config(background=T['panel'], foreground=T['dim'])
+        if not engine.running:
+            lbl_note.config(foreground=T['acc2'])
+        btn_theme.config(text=("☀" if thm.mode == 'dark' else "☾"))
+
+    def toggle_theme():
+        thm.toggle_mode(); restyle(); thm.save()
+
+    def open_accent():
+        theme.AccentPicker(root, thm, lambda hx: (thm.set_accent(hx), restyle()))
+
+    btn_theme.config(command=toggle_theme)
+    btn_accent.config(command=open_accent)
+    restyle()
+
     def restart_if_running(*_):
         if engine.running:
             engine.stop()
@@ -625,9 +614,9 @@ def run_gui():
                    f"round-trip ~{st['latency']*1000:4.0f} ms   xruns {st['xruns']}")
             if st['error']:
                 msg += f"   ERR {st['error']}"
-                status.config(text=msg, foreground="#ff5555")
+                status.config(text=msg, foreground=T['err'])
             else:
-                status.config(text=msg, foreground=ACC)
+                status.config(text=msg, foreground=T['acc2'])
         root.after(120, poll)
     poll()
 
