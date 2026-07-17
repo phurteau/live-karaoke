@@ -164,7 +164,7 @@ user-chosen **accent** color drives every highlight - the START button, section
 titles, checkboxes, focus rings and the color-wheel marker - while every other
 surface stays neutral, so any accent looks good.
 
-Click **🎨 Accent** to open an **HSV color-wheel picker**: drag on the wheel
+Click **🎨 Color** to open an **HSV color-wheel picker**: drag on the wheel
 (hue = angle, saturation = distance from center), set **Brightness** below, or
 type a **hex** value. Changes apply live. A companion "brighter" shade for hovers
 and glows, plus readable text color on accent buttons, are derived automatically.

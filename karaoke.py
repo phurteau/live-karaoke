@@ -376,7 +376,7 @@ def run_gui():
     title_lbl = ttk.Label(bar, text="🎤  Live Karaoke", style='Head.TLabel')
     title_lbl.pack(side='left', padx=12, pady=7)
     btn_theme = ttk.Button(bar, text="☀", style='Icon.TButton', width=3)
-    btn_accent = ttk.Button(bar, text="🎨  Accent", style='Icon.TButton')
+    btn_accent = ttk.Button(bar, text="🎨  Color", style='Icon.TButton')
     btn_theme.pack(side='right', padx=(0, 12), pady=6)
     btn_accent.pack(side='right', padx=(0, 6), pady=6)
 

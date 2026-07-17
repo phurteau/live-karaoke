@@ -268,7 +268,7 @@ class AccentPicker(tk.Toplevel):
         super().__init__(master)
         self.theme = theme
         self.on_change = on_change
-        self.title("Accent colour")
+        self.title("Color")
         self.resizable(False, False)
         self.transient(master)
         self._size = 210
