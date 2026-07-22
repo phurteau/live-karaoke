@@ -16,7 +16,7 @@ import tempfile
 import urllib.request
 import zipfile
 
-__version__ = "1.2.1"
+__version__ = "1.3.0"
 REPO = "phurteau/live-karaoke"
 
 APP_DIR = os.path.dirname(os.path.abspath(__file__))

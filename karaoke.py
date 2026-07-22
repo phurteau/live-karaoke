@@ -292,11 +292,33 @@ def run_gui():
     import tkinter as tk
     from tkinter import ttk, messagebox
 
+    # Distinct Windows taskbar identity (so the icon isn't grouped under python)
+    if os.name == "nt":
+        try:
+            import ctypes
+            ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(
+                "phurteau.LiveKaraoke")
+        except Exception:
+            pass
+
     engine = KaraokeEngine()
     root = tk.Tk()
     root.title(f"Live Karaoke  v{updater.__version__}")
     root.geometry("620x860")
     root.minsize(580, 780)
+
+    # window / taskbar icon
+    _app_dir = os.path.dirname(os.path.abspath(__file__))
+    try:
+        root.iconbitmap(os.path.join(_app_dir, "assets", "icon.ico"))
+    except Exception:
+        pass
+    try:
+        _icon_png = tk.PhotoImage(file=os.path.join(_app_dir, "assets", "icon.png"))
+        root.iconphoto(True, _icon_png)
+        root._icon_ref = _icon_png  # keep a reference so it isn't garbage-collected
+    except Exception:
+        pass
 
     style = ttk.Style(root)
     try:

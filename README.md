@@ -1,4 +1,4 @@
-# 🎤 Live Karaoke
+# Live Karaoke
 
 Turn your PC microphone into a live karaoke machine. Your voice is captured, run
 through studio effects, and played back **in real time** through your
@@ -10,7 +10,7 @@ Windows • Python • [sounddevice](https://python-sounddevice.readthedocs.io) 
 
 ---
 
-## ⚠️ Use wired headphones
+## Use wired headphones
 
 This app plays your live voice back to you. Two rules:
 
@@ -51,9 +51,9 @@ python -m venv .venv
 2. Set **Latency** - *Ultra (128)* is the default and lowest; if you hear
    crackles, step up to *Low / Balanced / Safe*. Watch the **xruns** counter in
    the status bar (it should stay `0`).
-3. Tick **☑ Exclusive mode** for the lowest possible latency (bypasses the
+3. Tick **Exclusive mode** for the lowest possible latency (bypasses the
    Windows audio mixer). Leave it off if it won’t engage on your hardware.
-4. Click **▶ START**, put your headphones on, and sing.
+4. Click **START**, put your headphones on, and sing.
 5. Try the **Presets**, then tweak the sliders to taste.
 
 The status bar reports the live mode, sample rate, CPU, **round-trip latency in
@@ -69,13 +69,13 @@ the effects (the effects are zero-added-latency). Typical round-trip:
 
 | Setup | Round-trip |
 |-------|-----------|
-| Bluetooth headphones | 150–250 ms ❌ (unusable - go wired) |
+| Bluetooth headphones | 150–250 ms (unusable - go wired) |
 | WASAPI shared, wired | ~30–50 ms |
-| WASAPI exclusive, wired, Ultra | ~10–20 ms ✅ |
+| WASAPI exclusive, wired, Ultra | ~10–20 ms |
 
 Want **true zero-latency** dry monitoring (no effects)? Windows has a built-in
 option: **Settings → System → Sound → More sound settings → Recording → your mic
-→ Properties → Listen → ☑ “Listen to this device.”** That’s instant but has no
+→ Properties → Listen → “Listen to this device.”** That’s instant but has no
 reverb/auto-tune. This app is the trade: a few ms of latency in exchange for
 live effects. For studio-grade latency, an external **ASIO** audio interface is
 the next step up.
@@ -93,7 +93,7 @@ the next step up.
 - **Auto-Tune** - snaps your pitch to a musical **Key** + **Scale**.
   - *Strength* 1.0 = hard, robotic T-Pain tuning; lower = gentle correction.
   - *Retune speed* high = instant snapping; low = smooth glide.
-  - The live **♪ note** readout shows the note it’s hearing.
+  - The live **note** readout shows the note it’s hearing.
 
 **Presets:** Clean · Karaoke · Concert Hall · T-Pain · Robot · Chipmunk · Deep Voice.
 
@@ -122,8 +122,11 @@ the next step up.
 | `theme.py` | Token-based dark/light themes + HSV accent color-wheel picker |
 | `updater.py` | Checks GitHub Releases and applies in-app updates |
 | `selftest.py` | Offline test of every effect path (no mic needed) |
+| `make_icon.py` | Regenerates the app icon (dev-only; needs Pillow) |
+| `assets/icon.ico`, `assets/icon.png` | App / window / shortcut icon |
 | `run_karaoke.bat` | Launcher (auto-installs on first run) |
-| `uninstall.bat` | Removes the venv, or optionally the whole folder |
+| `create_shortcut.bat` | Makes a Desktop shortcut with the app icon |
+| `uninstall.bat` | Full cleanup (env, caches, saved prefs, shortcut) |
 | `requirements.txt` | Python dependencies |
 
 Run the offline self-test any time:
@@ -151,20 +154,32 @@ Run the offline self-test any time:
 
 ---
 
+## Desktop shortcut
+
+Run **`create_shortcut.bat`** to drop a **Live Karaoke** shortcut on your Desktop
+(using the app's icon) so you can launch it without opening the folder.
+
 ## Uninstall
 
-Run **`uninstall.bat`** - it removes the virtual environment (and can optionally
-delete the whole folder). Re-running `run_karaoke.bat` rebuilds everything.
+Run **`uninstall.bat`** for a full, clean removal. It stops any running instance
+(only the app's own Python - your other Python apps are untouched), then deletes:
+
+- `.venv\` and `__pycache__\` - the Python environment and caches
+- `%LOCALAPPDATA%\LiveKaraoke\` - your saved theme / color preferences
+- the Desktop shortcut (if you created one)
+
+It then offers to delete the entire app folder too. Keeping the source, you can
+rebuild anytime by running `run_karaoke.bat`.
 
 ## Themes & accent color
 
 The UI is a **token-based dual theme**: **dark** (true black, default) or **light**
-(soft off-white), toggled with the **☀/☾** button in the header. A single
+(soft off-white), toggled with the theme-toggle button in the header. A single
 user-chosen **accent** color drives every highlight - the START button, section
 titles, checkboxes, focus rings and the color-wheel marker - while every other
 surface stays neutral, so any accent looks good.
 
-Click **🎨 Color** to open an **HSV color-wheel picker**: drag on the wheel
+Click **Color** to open an **HSV color-wheel picker**: drag on the wheel
 (hue = angle, saturation = distance from center), set **Brightness** below, or
 type a **hex** value. Changes apply live. A companion "brighter" shade for hovers
 and glows, plus readable text color on accent buttons, are derived automatically.
@@ -174,8 +189,8 @@ Your theme and accent persist between runs (default: dark + a dimmed green
 ## Automatic updates
 
 On launch, the app quietly checks GitHub for a newer release. If one exists, a
-green **🔔 New version available** banner appears at the top with a one-click
-**⬇ Update now** button:
+green **New version available** banner appears at the top with a one-click
+**Update now** button:
 
 - If you installed via `git clone`, it updates in place with `git pull`
   (falling back to the release zip if needed).
@@ -184,7 +199,7 @@ green **🔔 New version available** banner appears at the top with a one-click
 
 Dependencies are synced automatically, then you're prompted to **restart** to
 apply. The check is non-blocking and fails silently when you're offline. Use the
-**✕** to dismiss the banner, or **Release notes** to view the changelog on
+dismiss button to hide the banner, or **Release notes** to view the changelog on
 GitHub.
 
 ## License
