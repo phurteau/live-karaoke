@@ -1,5 +1,5 @@
 @echo off
-rem Live Karaoke launcher - runs the app, building the virtual environment
+rem Live Karaoke launcher: runs the app, building the virtual environment
 rem automatically the first time (or after an uninstall).
 setlocal
 cd /d "%~dp0"

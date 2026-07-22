@@ -1,7 +1,7 @@
 """Self-update support for Live Karaoke.
 
 Checks the GitHub Releases API for a newer version and can update the app in
-place - via `git pull` when running from a clone, or by downloading and
+place, via `git pull` when running from a clone, or by downloading and
 extracting the release zip otherwise. All network / parse failures are swallowed
 so the app never breaks when offline or rate-limited.
 """

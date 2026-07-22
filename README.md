@@ -2,7 +2,7 @@
 
 Turn your PC microphone into a live karaoke machine. Your voice is captured, run
 through studio effects, and played back **in real time** through your
-headphones - **reverb, echo, chorus, pitch shift, and real auto-tune** - with a
+headphones (**reverb, echo, chorus, pitch shift, and real auto-tune**), with a
 dark, green-accented GUI.
 
 Windows • Python • [sounddevice](https://python-sounddevice.readthedocs.io) +
@@ -14,9 +14,9 @@ Windows • Python • [sounddevice](https://python-sounddevice.readthedocs.io) 
 
 This app plays your live voice back to you. Two rules:
 
-- **Headphones, not speakers** - on speakers the mic re-captures the output and
+- **Headphones, not speakers**: on speakers the mic re-captures the output and
   you get a feedback howl (a limiter guards your ears, but still).
-- **Wired, not Bluetooth** - Bluetooth adds 150–250 ms of unavoidable delay that
+- **Wired, not Bluetooth**: Bluetooth adds 150–250 ms of unavoidable delay that
   no app can remove. For live monitoring you want a **wired** headset.
 
 ---
@@ -30,9 +30,9 @@ run_karaoke.bat
 ```
 
 The first run of **`run_karaoke.bat`** automatically creates a virtual
-environment and installs the dependencies (needs **Python 3.9+** on your PATH -
-get it from [python.org](https://www.python.org/downloads/) and tick *“Add
-python.exe to PATH”*). Every later run just launches the app.
+environment and installs the dependencies (needs **Python 3.9+** on your PATH;
+get it from [python.org](https://www.python.org/downloads/) and tick *"Add
+python.exe to PATH"*). Every later run just launches the app.
 
 Prefer to do it by hand?
 
@@ -48,11 +48,11 @@ python -m venv .venv
 
 1. Pick your **Mic in** and **Output** (your headphones). **WASAPI** devices are
    auto-selected because they give the lowest latency.
-2. Set **Latency** - *Ultra (128)* is the default and lowest; if you hear
+2. Set **Latency**: *Ultra (128)* is the default and lowest; if you hear
    crackles, step up to *Low / Balanced / Safe*. Watch the **xruns** counter in
    the status bar (it should stay `0`).
 3. Tick **Exclusive mode** for the lowest possible latency (bypasses the
-   Windows audio mixer). Leave it off if it won’t engage on your hardware.
+   Windows audio mixer). Leave it off if it won't engage on your hardware.
 4. Click **START**, put your headphones on, and sing.
 5. Try the **Presets**, then tweak the sliders to taste.
 
@@ -69,13 +69,13 @@ the effects (the effects are zero-added-latency). Typical round-trip:
 
 | Setup | Round-trip |
 |-------|-----------|
-| Bluetooth headphones | 150–250 ms (unusable - go wired) |
+| Bluetooth headphones | 150–250 ms (unusable, go wired) |
 | WASAPI shared, wired | ~30–50 ms |
 | WASAPI exclusive, wired, Ultra | ~10–20 ms |
 
 Want **true zero-latency** dry monitoring (no effects)? Windows has a built-in
 option: **Settings → System → Sound → More sound settings → Recording → your mic
-→ Properties → Listen → “Listen to this device.”** That’s instant but has no
+→ Properties → Listen → "Listen to this device."** That's instant but has no
 reverb/auto-tune. This app is the trade: a few ms of latency in exchange for
 live effects. For studio-grade latency, an external **ASIO** audio interface is
 the next step up.
@@ -84,16 +84,16 @@ the next step up.
 
 ## Effects
 
-- **Voice cleanup** - low-cut (removes rumble), compressor (evens out level),
+- **Voice cleanup**: low-cut (removes rumble), compressor (evens out level),
   noise gate (kills background hiss between phrases).
-- **Reverb** - room size + amount (bathroom → concert hall).
-- **Echo / Delay** - time, feedback, mix.
-- **Chorus** - thickens / doubles the voice.
-- **Pitch** - shift your whole voice up/down ±12 semitones (chipmunk / deep).
-- **Auto-Tune** - snaps your pitch to a musical **Key** + **Scale**.
+- **Reverb**: room size + amount (bathroom to concert hall).
+- **Echo / Delay**: time, feedback, mix.
+- **Chorus**: thickens / doubles the voice.
+- **Pitch**: shift your whole voice up/down ±12 semitones (chipmunk / deep).
+- **Auto-Tune**: snaps your pitch to a musical **Key** + **Scale**.
   - *Strength* 1.0 = hard, robotic T-Pain tuning; lower = gentle correction.
   - *Retune speed* high = instant snapping; low = smooth glide.
-  - The live **note** readout shows the note it’s hearing.
+  - The live **note** readout shows the note it's hearing.
 
 **Presets:** Clean · Karaoke · Concert Hall · T-Pain · Robot · Chipmunk · Deep Voice.
 
@@ -103,10 +103,10 @@ the next step up.
 
 - **I/O:** `sounddevice` full-duplex stream (mic → speakers) with a small block
   size; WASAPI shared by default, exclusive on request.
-- **Effects:** Spotify’s `pedalboard` (Reverb, Delay, Chorus, Compressor,
-  NoiseGate, Highpass, Gain, Limiter) - all zero-added-latency, processed live.
+- **Effects:** Spotify's `pedalboard` (Reverb, Delay, Chorus, Compressor,
+  NoiseGate, Highpass, Gain, Limiter), all zero-added-latency, processed live.
 - **Pitch / Auto-Tune:** a **custom time-domain pitch shifter** (`dsp.py`).
-  `pedalboard`’s built-in PitchShift sounds great but buffers ~1.08 s (fine
+  `pedalboard`'s built-in PitchShift sounds great but buffers ~1.08 s (fine
   offline, unusable live), so pitch is done with a delay-line shifter that is
   1:1 real-time, accurate to <1%, and ~1% CPU. Pitch is detected with FFT
   autocorrelation and snapped to the chosen scale.
@@ -139,17 +139,17 @@ Run the offline self-test any time:
 
 ## Troubleshooting
 
-- **~1 second echo** - you’re almost certainly on **Bluetooth**. Switch to wired
+- **~1 second echo**: you're almost certainly on **Bluetooth**. Switch to wired
   headphones.
-- **Still slappy on wired** - tick **Exclusive mode**; if the reported round-trip
-  won’t drop below ~40 ms your onboard codec may be the floor (use the Windows
-  “Listen to this device” monitor for dry zero-latency).
-- **“Could not start the audio stream”** - another app may own the mic, or
+- **Still slappy on wired**: tick **Exclusive mode**; if the reported round-trip
+  won't drop below ~40 ms your onboard codec may be the floor (use the Windows
+  "Listen to this device" monitor for dry zero-latency).
+- **"Could not start the audio stream"**: another app may own the mic, or
   exclusive mode was refused. Untick Exclusive, pick a different device, or use a
   Safe latency.
-- **Crackles / dropouts** - raise the Latency setting and close other audio apps;
+- **Crackles / dropouts**: raise the Latency setting and close other audio apps;
   keep an eye on the **xruns** counter.
-- **Too quiet / too loud** - use the **Monitor vol** slider.
+- **Too quiet / too loud**: use the **Monitor vol** slider.
 - **List devices from a terminal:** `.venv\Scripts\python karaoke.py --list`
 
 ---
@@ -162,10 +162,10 @@ Run **`create_shortcut.bat`** to drop a **Live Karaoke** shortcut on your Deskto
 ## Uninstall
 
 Run **`uninstall.bat`** for a full, clean removal. It stops any running instance
-(only the app's own Python - your other Python apps are untouched), then deletes:
+(only the app's own Python; your other Python apps are untouched), then deletes:
 
-- `.venv\` and `__pycache__\` - the Python environment and caches
-- `%LOCALAPPDATA%\LiveKaraoke\` - your saved theme / color preferences
+- `.venv\` and `__pycache__\`: the Python environment and caches
+- `%LOCALAPPDATA%\LiveKaraoke\`: your saved theme / color preferences
 - the Desktop shortcut (if you created one)
 
 It then offers to delete the entire app folder too. Keeping the source, you can
@@ -175,8 +175,8 @@ rebuild anytime by running `run_karaoke.bat`.
 
 The UI is a **token-based dual theme**: **dark** (true black, default) or **light**
 (soft off-white), toggled with the theme-toggle button in the header. A single
-user-chosen **accent** color drives every highlight - the START button, section
-titles, checkboxes, focus rings and the color-wheel marker - while every other
+user-chosen **accent** color drives every highlight (the START button, section
+titles, checkboxes, focus rings and the color-wheel marker), while every other
 surface stays neutral, so any accent looks good.
 
 Click **Color** to open an **HSV color-wheel picker**: drag on the wheel

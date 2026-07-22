@@ -1,4 +1,4 @@
-"""Live Karaoke - turn your PC mic into a karaoke monitor.
+"""Live Karaoke: turn your PC mic into a karaoke monitor.
 
 Mic in -> effects (reverb, echo, chorus, auto-tune, pitch, cleanup) -> speakers,
 in real time. USE HEADPHONES to avoid feedback howl.
@@ -267,7 +267,7 @@ def default_devices():
 
 def wasapi_defaults():
     """Return (input_idx, output_idx) for the WASAPI host API's default
-    devices - i.e. your real default mic/speakers on the low-latency path."""
+    devices, i.e. your real default mic/speakers on the low-latency path."""
     try:
         for a in sd.query_hostapis():
             if 'WASAPI' in a['name']:
@@ -402,7 +402,7 @@ def run_gui():
     btn_theme.pack(side='right', padx=(0, 12), pady=6)
     btn_accent.pack(side='right', padx=(0, 6), pady=6)
 
-    banner = tk.Label(root, text="🎧  USE HEADPHONES  -  speakers will cause feedback howl",
+    banner = tk.Label(root, text="🎧  USE HEADPHONES: speakers will cause feedback howl",
                       font=('Segoe UI', 9, 'bold'))
     banner.pack(fill='x')
 
@@ -430,7 +430,7 @@ def run_gui():
         if not info or upd_state["busy"]:
             return
         upd_state["busy"] = True
-        upd_btn.config(state='disabled', text="Updating…")
+        upd_btn.config(state='disabled', text="Updating...")
         upd_notes_btn.config(state='disabled')
 
         def worker():
@@ -442,7 +442,7 @@ def run_gui():
                 upd_state["busy"] = False
                 upd_notes_btn.config(state='normal')
                 if ok:
-                    upd_lbl.config(text=f"✅  Updated to v{info['version']} - restart to apply.")
+                    upd_lbl.config(text=f"✅  Updated to v{info['version']}, restart to apply.")
                     upd_btn.config(state='normal', text="⟳  Restart now", command=_upd_restart)
                 else:
                     upd_btn.config(state='normal', text="Retry update", command=_upd_do_update)

@@ -3,8 +3,8 @@
 A single user-chosen ACCENT drives every highlight; everything else is neutral.
 This is the desktop analog of the CSS custom-property system:
 
-  * CSS `:root { --token: … }`  ->  a flat Python dict of tokens.
-  * `html[data-theme=…]` override  ->  DARK / LIGHT base token dicts.
+  * CSS `:root { --token: ... }`  ->  a flat Python dict of tokens.
+  * `html[data-theme=...]` override  ->  DARK / LIGHT base token dicts.
   * accent derivation in JS       ->  `derive_accent()` (colorsys).
   * localStorage persistence       ->  a small JSON prefs file.
   * an HSV colour-wheel picker      ->  `AccentPicker` (a Tk Canvas wheel).
